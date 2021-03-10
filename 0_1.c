@@ -6,6 +6,7 @@ int comparator(int[],int[],int,int);
 void subtraction(int*, int*,int*,int*);
 void division(int*,int*);
 void multiplication(int*,int,int*);
+void abc();
 int a[len];
 int b[len];
 int a_r[len];
@@ -14,10 +15,10 @@ int ans = 1;
 int main()
 {
 	int i = 0,length_a = 0,length_b = 0;
-	int *n,*m,*length_l,*length_s;	
+	int *n,*m,*length_l,*length_s;
 	printf("enter num a\n");
 	while(1)
-	{       
+	{
 		scanf(" %d",&a[i]);
 		if(a[i]>=10)
 			break;
@@ -28,10 +29,10 @@ int main()
 	{
 		printf("%d",a[i]);
 	}*/
-	i = 0;	
+	i = 0;
 	printf("enter num b\n");
 	while(1)
-	{       
+	{
 		scanf(" %d",&b[i]);
 		if(b[i]>=10)
 			break;
@@ -43,7 +44,7 @@ int main()
 	{a_r[j] = a[length_a - j-1];}
 	for(int j = 0;j<length_b;j++)
 	{b_r[j] = b[length_b - j-1];}
-	
+
 	(length_a > length_b) ? (length_l = &length_a):(length_l = &length_b);
 	(length_a < length_b) ? (length_s = &length_a):(length_s = &length_b);
 	if(length_a == length_b)
@@ -55,7 +56,7 @@ int main()
 	int compare = comparator(a_r,b_r,length_a,length_b);
 
 	if(compare == 1)
-	{	
+	{
 		m = &a_r[0];
 		n = &b_r[0];
 	}
@@ -65,9 +66,9 @@ int main()
 		n = &a_r[0];
 	}
 	/*printf("%d\n",compare);
-	printf("l_%d\n",*length_l);	
-	printf("a_%d\n",length_a);	
-	printf("b_%d\n",length_b);	
+	printf("l_%d\n",*length_l);
+	printf("a_%d\n",length_a);
+	printf("b_%d\n",length_b);
 	for(int j = 0; j<length_s;j++)
 	{
 		printf("%d",*(n+j));
@@ -119,7 +120,7 @@ int comparator(int a_r[],int b_r[],int length_a,int length_b)
 		return 1;
 	else if(length_a < length_b)
 		return 2;
-	
+
 	for(int i = length_a -1;i>0;i--)
 	{
 		if(a_r[i] > b_r[i])
@@ -159,18 +160,18 @@ void subtraction(int *m,int *n,int *length_l,int *length_s)
 		for(int i = *length_l ; i<len ; i++)
 			m[i] = 0;
 	}
-	
+
 	int len_temp = *length_l;
 	while(m[len_temp-1] == 0)
 	{len_temp--;}
 	*length_l = len_temp;
-	
+
 }
 
 void division(int *m,int *length_l)
 {
 	for(int i = *length_l-1 ; i > -1 ; i--)
-	{	
+	{
 		if(m[i] % 2 != 0)
 			m[i-1] = m[i-1]+10;
 		m[i] = m[i]/2;
@@ -179,14 +180,14 @@ void division(int *m,int *length_l)
 	while(m[len_temp-1] == 0)
 	{len_temp--;}
 	*length_l = len_temp;
-	
+
 }
 
 void multiplication(int *m,int k,int* length)
-{	
+{
 	int carry = 0;
 	for(int i = 0;i<k;i++)
-	{	
+	{
 		for(int j = 0;j<*length;j++)
 		{
 			m[j] = m[j]*2;
@@ -208,4 +209,3 @@ void multiplication(int *m,int k,int* length)
 	{len_temp++;}
 	*length = len_temp;
 }
-		
