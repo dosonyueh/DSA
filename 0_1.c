@@ -8,6 +8,7 @@ void division(int*,int*);
 void multi_2(int*,int,int*);
 void multi_n(int*,int,int*);
 void swap(int*,int*,int*,int*);
+int equal(int*,int*,int*,int*);
 int a[len];
 int b[len];
 int a_r[len];
@@ -82,25 +83,59 @@ int main()
 			{}
 		}
 	}
-
-	while(*length_l != 0 && *length_s != 0)
+	//division(n,length_s);
+	//subtraction(m,n,length_l,length_s);
+	//while(0)
+	while(equal(m,n,length_l,length_s))
 	{
 		if(m[0] % 2 == 0 && n[0] % 2 == 0)
 		{
 			ans = ans * 2;
+			printf("m,n ==even\n");
 			division(m,length_l);
 			division(n,length_s);
+			for(int j = 0 ; j<*length_l;j++)
+			{printf("%d",m[j]);}
+			printf("\n");
+			for(int j = 0 ; j<*length_s;j++)
+			{printf("%d",n[j]);}
+			printf("\n");
+			printf("length_s == %d\n",*length_s);
+			printf("length_l == %d\n",*length_l);
 		}
 		else if (n[0] % 2 == 0)
 		{
+			printf("n==even,length_l == %d\n",*length_l);
 			division(n,length_s);
+			for(int j = 0 ; j<*length_s;j++)
+			{printf("%d",n[j]);}
+			printf("\n");
+			printf("length_s == %d\n",*length_s);
+			printf("length_l == %d\n",*length_l);
 		}
 		else if (m[0] % 2 == 0)
+		{
+			printf("m == even\n");
 			division(m,length_l);
-		
+			for(int j = 0 ; j<*length_l;j++)
+			{printf("%d",m[j]);}
+			printf("\n");
+			printf("length_s == %d\n",*length_s);
+			printf("length_l == %d\n",*length_l);
+		}
 		if(comparator(m,n,length_l,length_s))
+		{
+			printf("swaping\n");
 			swap(m,n,length_l,length_s);
+		}
 		subtraction(m,n,length_l,length_s);
+		printf("subing\n");
+		for(int j = 0 ; j<*length_l;j++)
+		{printf("%d",m[j]);}
+		printf("\n");
+		for(int j = 0 ; j<*length_s;j++)
+		{printf("%d",n[j]);}
+		printf("\n");
 	}
 	multi_n(n,ans,length_s);
 	printf("最大公因數為：");
@@ -146,36 +181,41 @@ void swap(int *m,int *n,int *length_l,int *length_s)
 
 int comparator(int *m,int *n,int *length_l,int *length_s)
 {
+	printf("comparing\n");
 	if(*length_l > *length_s)
 	{
-		m = &a_r[0];
-		n = &b_r[0];
+		//m = &a_r[0];
+		//n = &b_r[0];
+		printf("m is bigger by length\n");
 		return 0;
 	}
 
 	else if(*length_l < *length_s)
 	{
 
-		m = &b_r[0];
-		n = &a_r[0];
+		//m = &b_r[0];
+		//n = &a_r[0];
+		printf("n is bigger by length\n");
 		return 1;
 	}
 
 	for(int i = *length_l -1;i>0;i--)
-	{
+	{	int equ = 0;
 		if(m[i] > n[i])
 		{
-			m = &a_r[0];
-			n = &b_r[0];
+		//	m = &a_r[0];
+		//	n = &b_r[0];
+		printf("m is bigger by %dth\n",i+1);
 			return 0;
 		}
-		else if(b_r[i] > a_r[i])
+		else if(n[i] > m[i])
 		{
-			m = &b_r[0];
-			n = &a_r[0];
+		//	m = &b_r[0];
+		//	n = &a_r[0];
+		printf("n is bigger by %dth\n",i+1);
 			return 1;
 		}
-		else if(b_r[i] == a_r[i])
+		else if(m[i] == n[i])
 		{}
 	}
 }
@@ -199,30 +239,38 @@ void subtraction(int *m,int *n,int *length_l,int *length_s)
 	if(*length_l > *length_s)
 	{
 		for(int i = *length_s ; i < *length_l;i++)
+		{
 			m[i] = m[i];
+			printf("111\n");
+		}
 		for(int i = *length_l ; i<len ; i++)
+		{
 			m[i] = 0;
+			printf("222\n");
+		}
 	}
 
 	int len_temp = *length_l;
 	while(m[len_temp-1] == 0)
 	{len_temp--;}
 	*length_l = len_temp;
+	printf("after sub length_l == %d\n",*length_l);
 
 }
 
-void division(int *m,int *length_l)
+void division(int *a,int *length)
 {
-	for(int i = *length_l-1 ; i > -1 ; i--)
+	for(int i = *length-1 ; i > -1 ; i--)
 	{	
-		if(m[i] % 2 != 0)
-			m[i-1] = m[i-1]+10;
-		m[i] = m[i]/2;
+		if(a[i] % 2 != 0)
+			a[i-1] = a[i-1]+10;
+		a[i] = a[i]/2;
 	}
-	int len_temp = *length_l;
-	while(m[len_temp-1] == 0)
+	int len_temp = *length;
+	while(a[len_temp-1] == 0)
 	{len_temp--;}
-	*length_l = len_temp;
+	*length = len_temp;
+	printf("after div length == %d\n",*length);
 
 }
 
@@ -272,3 +320,14 @@ void multi_n(int *n,int ans,int*length)
 	*length = len_temp;
 }
 
+int equal(int *m,int *n,int *length_l,int *length_s)
+{
+	if(*length_l != *length_s)
+		return 1;
+	for(int i = 0 ; i < *length_l; i++)
+	{
+		if(m[i] != n[i])
+			return 1;
+	}
+	return 0;
+}
