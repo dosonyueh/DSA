@@ -64,7 +64,7 @@ int main()
 	if(length_a == length_b)
 	{
 		length_l = &length_a;
-		length_s = &length_a;
+		length_s = &length_b;
 		for(int i = length_a -1;i>0;i--)
 		{
 			if(a_r[i] > b_r[i])
@@ -86,6 +86,8 @@ int main()
 	//division(n,length_s);
 	//subtraction(m,n,length_l,length_s);
 	//while(0)
+	printf("length_l add == %p\n",length_l);
+	printf("length_s add == %p\n",length_s);
 	while(equal(m,n,length_l,length_s))
 	{
 		if(m[0] % 2 == 0 && n[0] % 2 == 0)
@@ -173,8 +175,7 @@ void swap(int *m,int *n,int *length_l,int *length_s)
 	printf(" n = ");
 	for(int j = 0 ; j <*length_s ; j++)
 	{printf("%d",n[j]);}
-	printf("\n")
-		;
+	printf("\n");
 	*length_l = *length_s;
 	*length_s = length_temp;
 	for(int i = 0 ; i< *length_l ; i++)
@@ -215,7 +216,7 @@ int comparator(int *m,int *n,int *length_l,int *length_s)
 		return 1;
 	}
 
-	for(int i = *length_l -1;i>0;i--)
+	for(int i = *length_l -1;i>-1;i--)
 	{	int equ = 0;
 		if(m[i] > n[i])
 		{
@@ -239,7 +240,11 @@ int comparator(int *m,int *n,int *length_l,int *length_s)
 
 void subtraction(int *m,int *n,int *length_l,int *length_s)
 {
+	printf("before sub length_l == %d\n",*length_l);
+	printf("before sub length_s == %d\n",*length_s);
+	printf("before sub length_s add == %p\n",length_s);
 	//先對位數較少的做減法
+	int len_temp = 0;
 	for (int i = 0;i< *length_s;i++)
 	{
 		if(m[i] >= n[i])
@@ -251,6 +256,7 @@ void subtraction(int *m,int *n,int *length_l,int *length_s)
 			m[i] = m[i] - n[i];
 		}
 	}
+	//10260981-631569
 	//將較高位數放入結果中
 	if(*length_l > *length_s)
 	{
@@ -266,11 +272,19 @@ void subtraction(int *m,int *n,int *length_l,int *length_s)
 		}
 	}
 
-	int len_temp = *length_l;
+	printf("after sub length_s == %d\n",*length_s);
+	len_temp = *length_l;
+	printf("after sub length_s == %d\n",*length_s);
 	while(m[len_temp-1] == 0)
-	{len_temp--;}
+	{
+		len_temp--;
+		printf("after sub length_s1 == %d\n",*length_s);
+	}
 	*length_l = len_temp;
 	printf("after sub length_l == %d\n",*length_l);
+	printf("after sub length_s == %d\n",*length_s);
+	printf("after sub length_l add == %p\n",length_l);
+	printf("after sub length_s add == %p\n",length_s);
 
 }
 
