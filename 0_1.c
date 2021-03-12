@@ -125,7 +125,6 @@ int main()
 		}
 		if(comparator(m,n,length_l,length_s))
 		{
-			printf("swaping\n");
 			swap(m,n,length_l,length_s);
 		}
 		subtraction(m,n,length_l,length_s);
@@ -167,6 +166,15 @@ void swap(int *m,int *n,int *length_l,int *length_s)
 {
 	int temp = 0;
 	int length_temp = *length_l;
+	
+	printf("before swapping : m = ");
+	for(int j = 0 ; j <*length_l ; j++)
+	{printf("%d",m[j]);}
+	printf(" n = ");
+	for(int j = 0 ; j <*length_s ; j++)
+	{printf("%d",n[j]);}
+	printf("\n")
+		;
 	*length_l = *length_s;
 	*length_s = length_temp;
 	for(int i = 0 ; i< *length_l ; i++)
@@ -175,6 +183,14 @@ void swap(int *m,int *n,int *length_l,int *length_s)
 		m[i] = n[i];
 		n[i] = temp;
 	}
+
+	printf("after swapping : m = ");
+	for(int j = 0 ; j <*length_l ; j++)
+	{printf("%d",m[j]);}
+	printf(" n = ");
+	for(int j = 0 ; j <*length_s ; j++)
+	{printf("%d",n[j]);}
+	printf("\n");
 }
 		
 
