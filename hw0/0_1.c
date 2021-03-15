@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define len 10
+#include<string.h>
+#define len 1000
 
 int comparator(int*,int*,int*,int*);
 void subtraction(int*, int*,int*,int*);
@@ -9,37 +10,43 @@ void multi_2(int*,int,int*);
 void multi_n(int*,int,int*);
 void swap(int*,int*,int*,int*);
 int equal(int*,int*,int*,int*);
+int* gcd(int*,int*);
 int a[len];
 int b[len];
 int a_r[len];
 int b_r[len];
+
 int main()
 {
-	int i = 0,length_a = 0,length_b = 0,ans = 1;
+	int l,j,i = 0,length_a = 0,length_b = 0,ans = 1;
 	int *n,*m,*length_l,*length_s;	
+	char s[len] = {0};
 	printf("enter num a\n");
-	while(1)
-	{       
-		scanf(" %d",&a[i]);
-		if(a[i]>=10)
-			break;
-		i++;
-		length_a++;
+	scanf("%[^\n]",s);
+	printf("%s\n",s);
+	for(l = 0 ; l<len ; l++)
+	{
+		if(s[l] == ' ')
+		{break;}
+		printf("%d",s[l]-'0');
 	}
-	/*for(i = 0;i<lenth;i++)
-	  {
-	  printf("%d",a[i]);
-	  }*/
-	i = 0;	
-	printf("enter num b\n");
-	while(1)
-	{       
-		scanf(" %d",&b[i]);
-		if(b[i]>=10)
+	for(i = 0 ; i<l;i++)
+		a[i] = s[i] - '0';
+	length_a = l;
+	for(j = len-1;j>l+1;j--)
+	{
+		if(s[j]!=0)
 			break;
-		i++;
-		length_b++;
 	}
+	length_b = j-l;
+	for(i = l+1; i<j+1;i++)
+		b[i-l-1] = s[i] - '0';
+	printf("l = %d,l_a = %d,l_b = %d\n",l,length_a,length_b);
+	for(i = 0 ; i < length_a;i++)
+		printf("%d",a[i]);
+	for(i = 0 ; i < length_b;i++)
+		printf("%d",b[i]);
+	
 	//反轉陣列順序
 	for(int j = 0;j<length_a;j++)
 	{a_r[j] = a[length_a - j-1];}
@@ -166,6 +173,8 @@ int main()
 	printf("最大公因數為：");
 	for(int j = *length_s-1;j>-1;j--)
 	{printf("%d",n[j]);}
+	printf("\n");
+	gcd(n,length_s);
 
 	/*printf("before ll = %d ls = %d\n",*length_l,*length_s);
 	for (int j = 0 ; j < *length_l ; j++)
@@ -186,8 +195,25 @@ int main()
 	//subtraction(m,n,length_l,length_s);
 	//division(m,length_l);
 	//multiplication(m,2,length_l);
+	return 0;
 }
+int* gcd(int *n,int *length_s)
+{	
+	int tem[*length_s];
+	for(int j = 0;j<*length_s;j++)
+	{
+		tem[j] = n[(*length_s)-1-j];
+	}	
 
+	n = &tem[0];
+	for(int j = 0;j<*length_s;j++)
+	{
+		printf("%d",n[j]);
+	}
+	
+	return n;
+	
+}
 void swap(int *m,int *n,int *length_l,int *length_s)
 {
 	int temp = 0;
@@ -225,8 +251,6 @@ int comparator(int *m,int *n,int *length_l,int *length_s)
 	printf("comparing\n");
 	if(*length_l > *length_s)
 	{
-		//m = &a_r[0];
-		//n = &b_r[0];
 		printf("m is bigger by length\n");
 		return 0;
 	}
@@ -234,8 +258,6 @@ int comparator(int *m,int *n,int *length_l,int *length_s)
 	else if(*length_l < *length_s)
 	{
 
-		//m = &b_r[0];
-		//n = &a_r[0];
 		printf("n is bigger by length\n");
 		return 1;
 	}
@@ -244,15 +266,11 @@ int comparator(int *m,int *n,int *length_l,int *length_s)
 	{	int equ = 0;
 		if(m[i] > n[i])
 		{
-		//	m = &a_r[0];
-		//	n = &b_r[0];
 		printf("m is bigger by %dth\n",i+1);
 			return 0;
 		}
 		else if(n[i] > m[i])
 		{
-		//	m = &b_r[0];
-		//	n = &a_r[0];
 		printf("n is bigger by %dth\n",i+1);
 			return 1;
 		}
@@ -285,12 +303,10 @@ void subtraction(int *m,int *n,int *length_l,int *length_s)
 		for(int i = *length_s ; i < *length_l;i++)
 		{
 			m[i] = m[i];
-			printf("111\n");
 		}
 		for(int i = *length_l ; i<len ; i++)
 		{
 			m[i] = 0;
-			printf("222\n");
 		}
 	}
 
