@@ -2,45 +2,44 @@
 #include <stdio.h>
 #include <string.h>
 #define Size 100
-void Input(char input[][Size],int*,int *);
+void Input(char*,int*,int *,char equ[][Size]);
 int main()
 {
-	char input[][Size] = {0};
-	int length[100] = {0};
+	char input[Size] = {0},equ[][Size] = {0};
+	int column[100] = {0};
 	int row = 0;
 	int i,j;
-	Input(input,length,&row);
-/*	for(i = 0 ; i<row;i++)
+	Input(input,column,&row,equ);
+	for(i = 0 ; i<row;i++)
 	{
-		for(j = 0;j<length[i];j++)
-			printf("%c",input[i][j]);
+		for(j = 0;j<column[i];j++)
+			printf("%c",equ[i][j]);
 		printf("\n");
 	}
-	printf("\n");
-*/}
+	printf("row = %d",row);
 
-void Input(char input[][Size],int* length,int* row)
+
+}
+
+void Input(char input[],int* column,int* row,char equ[][Size])
 {
-	int i = 0;
-/*	while(scanf("%s",input[i]) != EOF)
+	int i = 0,len,j = 0,k = 0;
+	while(scanf("%[^EOF],s",input) != EOF)
 	{
-//		scanf("%s",input);
-		printf("i = %d\n",i);
-		length[i] = strlen(input[i]);
-		for(i = 0 ; i<length[0];i++)
-			printf("input = %c",input[0][i]);
-		printf("last = %c\n",input[0][length[0]]);
-		if(input[0][length[0]] == '\0')
-			printf("end\n");
-		printf("strlen = %d\n",length[0]);
-		i++;
+		len = strlen(input);
 	}
-*/	
-//	scanf("%s",input[i]);
-	while(fgets(input[i],100,stdin) != NULL){
-		length[i] = strlen(input[i]);
-		printf("length = %d\n",length[i]);
-		for(int j = 0;j<length[0];j++)
-			printf("input = %c",input[0][j]);
+	for(i = 0;i<len;i++)
+	{
+		equ[j][k] = input[i];
+		k++;
+		if(input[i] == '\n')
+		{
+			equ[j][k-1] = '\0';
+			column[j] = k;
+			(*row)++;
+			k = 0;
+			j++;
+
+		}
 	}
 }
