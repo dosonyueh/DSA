@@ -11,6 +11,7 @@ char instack_pri[6] = {'#','(','+','-','*','/'};
 void calculation(double**,int*,int);
 int main()
 {
+//	char* input =(char*) malloc(sizeof(char) * Size);
 	char input[Size] = {0};
 	char** infix;
 	infix = (char**)malloc(sizeof(char*) * Size);
@@ -20,11 +21,28 @@ int main()
 	int row = 0;
 	int i,j;
 	Input(input,column,&row,infix);
+	printf("hello");
+	//free(input);	
+	for(i = 0 ; i<row;i++)
+	{
+		printf("column[%d] = %d\n",i,column[i]);
+		for(j = 0;j<column[i];j++)
+			printf("%c",infix[i][j]);
+		printf("\n");
+	}
+	printf("row = %d\n",row);
 	double** postfix;
 	postfix = (double**)malloc(sizeof(double*) * Size);
 	for(int a = 0;a<Size;a++)
 		postfix[a]=(double*)malloc(Size *sizeof(double*));
 	infix_to_postfix(infix,column,postfix,row);
+	printf("after in_to_post\n");
+	for(i = 0 ; i<row;i++)
+	{
+		for(j = 0;j<column[i]+10;j++)
+			printf("%f ",postfix[i][j]);
+		printf("\n");
+	}
 	free(infix);
 	calculation(postfix,column,row);
 
@@ -33,24 +51,34 @@ int main()
 void Input(char input[],int* column,int* row,char** infix)
 {
 	int i = 0,len,j = 0,k = 0;
+	printf("hello");
 	while(scanf("%[^EOF],s",input) != EOF)
 	{	
+		printf("123");
 		len = strlen(input);
 	}
 	for(i = 0;i<len;i++)
 	{
 		infix[j][k] = input[i];
 		k++;
+		//column[j]++;
+		printf("k = %d,j = %d\n",k,j);
+		printf("column[0] = %d\n",column[0]);
+		printf("column[0] = %p\n",&column[0]);
+		printf("column[1] = %d\n",column[1]);
+		printf("column[1] = %p\n",&column[1]);
 		if(input[i] == '\n')
 		{//#代表一列的結束
 			infix[j][k-1] = '#';
 			column[j] = k-1;
 			(*row)++;
 			k = 0;
+			printf("column[%d] = %d\n",j,column[j]);
 			j++;
 
 		}
 	}
+	printf("column[0]  =  %d\n",column[0]);
 }
 
 void infix_to_postfix(char** infix,int* column, double** postfix,int row)
@@ -59,10 +87,18 @@ void infix_to_postfix(char** infix,int* column, double** postfix,int row)
 	int top = 0, i = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
 	for(i = 0;i < row ; i++){
 		char *stack = malloc(sizeof(char)*Size);
+		printf("row = %d,column = %d\n",i,column[i]);
 		stack[top] = '#';
 		top = 0;idx_postfix = 0;num = 0; flag = 1,flag_2 = 0;
+		for(int k = 0 ; k < row ; k++)
+		{
+			for(int l = 0;l < column[i]+1 ; l++)
+				printf("%c",infix[k][l]);
+			printf("\n");
+		}
 		for(j = 0;j < column[i]+1 ; j++)
 		{
+			printf("j = %d,incoming = %c\n",j,infix[i][j]);
 			switch(infix[i][j])
 			{
 				case ')'://下個為 ) 則將 ( 之前的堆疊取出
@@ -81,23 +117,38 @@ void infix_to_postfix(char** infix,int* column, double** postfix,int row)
 						postfix[i][idx_postfix] = stack[top--];
 						idx_postfix++;
 					}
+					for(int k = 0 ; k < row ; k++)
+					{
+						for(int l = 0;l < column[i]+1 ; l++)
+							printf("%c",infix[k][l]);
+						printf("\n");
+					}
 					break;
 				case '(':
 				case '*':
 				case '/':
 					num = 0;
+					printf("into (*/ ,stack = %c,top = %d\n",stack[top],top);
 					while(compare(stack[top],infix[i][j]))
 					{
+						printf("pushing\n");
 						postfix[i][idx_postfix] = stack[top--];
 						idx_postfix++;
 						flag = 1;
 					}
 					stack[++top] = infix[i][j];
+					printf("%c into stack\n",infix[i][j]);
 					flag = 1;
 					break;
 				case '+':
 				case '-':
 					num = 0;
+					for(int k = 0 ; k < row ; k++)
+					{
+						for(int l = 0;l < column[i]+1 ; l++)
+							printf("%c",infix[k][l]);
+						printf("\n");
+					}
 					if(flag == 1)
 					{
 						stack[++top] = infix[i][j];
@@ -115,8 +166,10 @@ void infix_to_postfix(char** infix,int* column, double** postfix,int row)
 					}
 					break;
 				default :
+					printf("%c into postfix\n",infix[i][j]);
 					if(num != 0)
 					{
+						printf("more than one digit\n");
 						idx_postfix--;
 						postfix[i][idx_postfix] = infix[i][j] + ((postfix[i][idx_postfix]-48)*10);
 						idx_postfix++;
@@ -142,6 +195,7 @@ void infix_to_postfix(char** infix,int* column, double** postfix,int row)
 int compare(char stack,char infix)
 {
 	int idx_stack = 0, idx_infix = 0,ans = 0;
+	printf("into compare\n");
 	while(instack_pri[idx_stack] != stack)
 	{idx_stack++;}
 	while(incoming_pri[idx_infix] != infix)
@@ -194,7 +248,7 @@ void calculation(double** postfix,int* column,int row)
 			}
 			j++;
 		}
-		printf("%f\n",stack[top-1]);
+		printf("ans = %f\n",stack[top-1]);
 		free(stack);
 	}
 
