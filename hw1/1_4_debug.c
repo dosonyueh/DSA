@@ -3,26 +3,27 @@
 #include <string.h>
 #define Size 10000
 //void Input(char*,int*,int *,char equ[][Size]);
-void Input(char*,int*,int *,char** infix);
+void Input(char*,int*,int *);
 int compare(char,char);
 void infix_to_postfix(char** , int*, double**,int);
+void Input_to_infix(char [],int* ,int* ,char**);
 char incoming_pri[7] = {'#',')','+','-','*','/','('};
 char instack_pri[6] = {'#','(','+','-','*','/'};
 void calculation(double**,int*,int);
 int main()
 {
-//	char* input =(char*) malloc(sizeof(char) * Size);
 	char input[Size] = {0};
-	char** infix;
-	infix = (char**)malloc(sizeof(char*) * Size);
-	for(int a = 0;a<Size;a++)
-		infix[a]=(char*)malloc(Size * sizeof(char*));
 	int column[Size] = {0};
 	int row = 0;
 	int i,j;
-	Input(input,column,&row,infix);
+	Input(input,column,&row);
+	char** infix;
+	infix = (char**)malloc(sizeof(char*) * Size);
+	for(int a = 0;a<row;a++)
+		infix[a]=(char*)malloc(Size * sizeof(char*));
 	printf("hello");
-	//free(input);	
+	Input_to_infix(input,column,&row,infix);
+
 	for(i = 0 ; i<row;i++)
 	{
 		printf("column[%d] = %d\n",i,column[i]);
@@ -47,19 +48,33 @@ int main()
 	calculation(postfix,column,row);
 
 }
-
-void Input(char input[],int* column,int* row,char** infix)
+void Input_to_infix(char input[],int* column,int* row ,char** infix)
+{
+	int i = 0,j = 0,k = 0,len = strlen(input);
+	for(i = 0 ; i< len ; i++)
+	{
+		infix[j][k] = input[i];
+		k++;
+		if(input[i] == '\n')
+		{
+			infix[j][k-1] = '#';
+			column[j] = k-1;
+			k = 0;
+			printf("column[%d] = %d\n",j,column[j]);
+			j++;
+		}
+	}
+	
+}
+void Input(char input[],int* column,int* row)
 {
 	int i = 0,len,j = 0,k = 0;
-	printf("hello");
 	while(scanf("%[^EOF],s",input) != EOF)
 	{	
-		printf("123");
 		len = strlen(input);
 	}
 	for(i = 0;i<len;i++)
 	{
-		infix[j][k] = input[i];
 		k++;
 		//column[j]++;
 		printf("k = %d,j = %d\n",k,j);
@@ -69,8 +84,6 @@ void Input(char input[],int* column,int* row,char** infix)
 		printf("column[1] = %p\n",&column[1]);
 		if(input[i] == '\n')
 		{//#代表一列的結束
-			infix[j][k-1] = '#';
-			column[j] = k-1;
 			(*row)++;
 			k = 0;
 			printf("column[%d] = %d\n",j,column[j]);
@@ -249,7 +262,6 @@ void calculation(double** postfix,int* column,int row)
 			j++;
 		}
 		printf("ans = %f\n",stack[top-1]);
-		free(stack);
 	}
 
 }

@@ -1,36 +1,54 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define Size 10000
+#define Size 1000000
 //void Input(char*,int*,int *,char equ[][Size]);
-void Input(char*,int*,int *,char** infix);
+void Input(char*,int*,int *);
 int compare(char,char);
 void infix_to_postfix(char** , int*, double**,int);
+void Input_to_infix(char [],int* ,int* ,char**);
 char incoming_pri[7] = {'#',')','+','-','*','/','('};
 char instack_pri[6] = {'#','(','+','-','*','/'};
 void calculation(double**,int*,int);
 int main()
 {
 	char input[Size] = {0};
+	int column[Size] = {0};
+	int row = 0,row_ans = 0;
+	int i,j;
+	Input(input,column,&row);
 	char** infix;
 	infix = (char**)malloc(sizeof(char*) * Size);
-	for(int a = 0;a<Size;a++)
+	for(int a = 0;a<row+3;a++)
 		infix[a]=(char*)malloc(Size * sizeof(char*));
-	int column[Size] = {0};
-	int row = 0;
-	int i,j;
-	Input(input,column,&row,infix);
+	Input_to_infix(input,column,&row,infix);
 	double** postfix;
 	postfix = (double**)malloc(sizeof(double*) * Size);
-	for(int a = 0;a<Size;a++)
+	for(int a = 0;a<row+3;a++)
 		postfix[a]=(double*)malloc(Size *sizeof(double*));
 	infix_to_postfix(infix,column,postfix,row);
 	free(infix);
 	calculation(postfix,column,row);
-
+	return 0;
 }
-
-void Input(char input[],int* column,int* row,char** infix)
+void Input_to_infix(char input[],int* column,int* row ,char** infix)
+{
+	int i = 0,j = 0,k = 0,len = strlen(input);
+	for(i = 0 ; i< len ; i++)
+	{
+		infix[j][k] = input[i];
+		k++;
+		if(input[i] == '\n')
+		{
+			infix[j][k-1] = '#';
+			column[j] = k-1;
+			k = 0;
+			j++;
+		}
+	}
+	
+}
+void Input(char input[],int* column,int* row)
 {
 	int i = 0,len,j = 0,k = 0;
 	while(scanf("%[^EOF],s",input) != EOF)
@@ -39,12 +57,9 @@ void Input(char input[],int* column,int* row,char** infix)
 	}
 	for(i = 0;i<len;i++)
 	{
-		infix[j][k] = input[i];
 		k++;
 		if(input[i] == '\n')
 		{//#代表一列的結束
-			infix[j][k-1] = '#';
-			column[j] = k-1;
 			(*row)++;
 			k = 0;
 			j++;
@@ -195,7 +210,6 @@ void calculation(double** postfix,int* column,int row)
 			j++;
 		}
 		printf("%f\n",stack[top-1]);
-		free(stack);
 	}
 
 }
