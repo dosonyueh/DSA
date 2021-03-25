@@ -18,7 +18,7 @@ int main()
 
 	int* column = (int*)malloc(sizeof(int) * (row+3));
 	char** infix;
-	infix = (char**)malloc(sizeof(char*) * Size);
+	infix = (char**)malloc(sizeof(char*) * (row+3));
 	for(int a = 0;a<row+3;a++)
 		infix[a]=(char*)malloc(Size * sizeof(char));
 
@@ -27,7 +27,7 @@ int main()
 	free(input);
 
 	double** postfix;
-	postfix = (double**)malloc(sizeof(double*) * Size);
+	postfix = (double**)malloc(sizeof(double*) * (row+3));
 	for(int a = 0;a<row+3;a++)
 		postfix[a]=(double*)malloc(Size *sizeof(double));
 	
