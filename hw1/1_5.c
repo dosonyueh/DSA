@@ -13,9 +13,9 @@ struct node{
 	struct node *before;
 };
 typedef struct node Node;
-void enter(Node **,int ,int);
-void leave(Node **,int);
-Node *head,*current;
+void enter(Node*,int,int);
+void leave(Node*,int);
+Node *head = NULL;
 int main()
 {
 	int n = 0 ,k = 0;
@@ -33,15 +33,15 @@ int main()
 		}
 		printf("\n");
 	}
-	Node *head = NULL;
 //	init();
-	enter(&head,2,2);
-	enter(&head,3,4);
-	leave(&head,1);
-	while(head != NULL)
+	enter(head,2,2);
+	enter(head,3,4);
+	//leave(head,1);
+	Node* current = head;
+	while(current != NULL)
 	{	
-		printf("%d\n",head->cabin);
-		head = head->next;
+		printf("%d\n",current->cabin);
+		current = current->next;
 	}
 	
 }
@@ -98,29 +98,31 @@ void calculation(int* n,char** oper)
 	}
 }
 
-void enter(Node **head,int rail,int num)
+void enter(Node *head,int rail,int num)
 {
 	Node *ptr = (Node*)malloc(sizeof(Node));
+	Node *current = head;
 	ptr->cabin = num;
 	ptr->next = NULL;
-	if(*head == NULL)
-		*head = ptr;
+	
+	if(head == NULL)
+		head = ptr;
 	else
 	{
-		current = *head;
 		while(current->next != NULL)
 			current = current->next;
 		current->next = ptr;
-		ptr->before = current;
 	}
 	printf("%d entered\n",num);
 }
 
-void leave(Node **head,int rail)
+void leave(Node *head ,int rail)
 {
-	current = *head;
+	Node *current = head;
 	while(current->next != NULL)
+	{
 		current = current->next;
+	}
 	free(current);
 }
 
