@@ -47,6 +47,7 @@ int main()
 void Input_to_infix(char input[],int* column,int* row ,char** infix)
 {
 	int i = 0,j = 0,k = 0,len = strlen(input);
+	printf("len = %d\n",len);
 	for(i = 0 ; i< len ; i++)
 	{
 		infix[j][k] = input[i];
@@ -63,7 +64,7 @@ void Input_to_infix(char input[],int* column,int* row ,char** infix)
 }
 void Input(char input[],int* row)
 {
-	int i = 0,len,j = 0,k = 0;
+	int i = 0,len = 0,j = 0,k = 0;
 	while(scanf("%[^EOF],s",input) != EOF)
 	{	
 		len = strlen(input);

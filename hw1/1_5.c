@@ -1,11 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define Col 20
+#define Col 100
 void Input_spec(int*,int*);
 void Input_oper(int*,char**);
-void calculate(int*,char**);
-void init();
 
 struct node{
 	int cabin;
@@ -13,13 +11,16 @@ struct node{
 	struct node *before;
 };
 typedef struct node Node;
-void enter(Node*,int,int);
-void leave(Node*,int);
-Node *head = NULL;
+void calculation(int,char**,Node**);
+void enter(int,int,Node**);
+void leave(int,Node**);
+Node *head;
 int main()
 {
 	int n = 0 ,k = 0;
 	Input_spec(&n,&k);
+	
+	Node** h_stack = (Node**)malloc(sizeof(Node*) * k);
 	char** oper = (char**)malloc(sizeof(char*) * (n+3));
 	for(int a = 0; a < n+3;a++)
 		oper[a] = (char*)malloc(sizeof(char) * Col);
@@ -33,17 +34,18 @@ int main()
 		}
 		printf("\n");
 	}
-//	init();
-	enter(head,2,2);
-	enter(head,3,4);
-	//leave(head,1);
-	Node* current = head;
+	calculation(n,oper,h_stack);
+/*	enter(2,2,h_stack);
+	enter(3,4,h_stack);
+	enter(3,4,h_stack);
+	leave(2,h_stack);
+	Node* current = h_stack[12];
 	while(current != NULL)
 	{	
 		printf("%d\n",current->cabin);
 		current = current->next;
 	}
-	
+*/	
 }
 
 void Input_spec(int* n,int* k)
@@ -79,34 +81,71 @@ void Input_oper(int* n,char** oper)
 		
 }
 
-void init(void)
+void calculation(int n,char** oper,Node** h_stack)
 {
-	printf("linked list init\n");
-	Node *ptr = (Node*)malloc(sizeof(Node));
-	ptr->cabin = 0;
-	ptr->next = head;
-	ptr->before = head;
-
-}
-
-void calculation(int* n,char** oper)
-{
-	int i = 0;
-	for(i = 0; i <*n;i++)
+	int i = 0,j = 0,rail = 0,cabin = 0,c = 0,d = 0,k = 0;
+	int space[10] = {0};
+	for(i = 0; i < n;i++)
 	{
-		
+		rail = 0,cabin = 0,j = 3,k = 0;
+		switch(oper[i][0])
+		{
+			case 'e':
+				printf("enter!\n");
+				while(oper[i][j] != '\000')
+				{
+					if(oper[i][j] == ' ')
+					{
+						space[k] = j;
+						k++;
+					}
+					j++;
+				}
+				for(c = space[0]+1;c < space[1];c++)
+				{
+					rail = rail*10 + (int)oper[i][c] -48;
+				}
+				for(d = space[1]+1;d < j;d++)
+					cabin = cabin*10 + (int)oper[i][d] -48;
+				enter(rail,cabin,h_stack);
+				break;
+			case 'l':
+				printf("leave!\n");
+				while(oper[i][j] != '\000')
+				{
+					if(oper[i][j] == ' ')
+					{
+						space[k] = j;
+						k++;
+					}
+					j++;
+				}
+				for(c = space[0]+1;c < j;c++)
+				{
+					rail = rail*10+ (int)oper[i][c] - 48;
+				}
+				leave(rail,h_stack);
+				break;
+			case 'm':
+				break;
+		}
+
 	}
 }
 
-void enter(Node *head,int rail,int num)
+void enter(int rail,int num,Node** h_stack )
 {
+	head = h_stack[rail];
 	Node *ptr = (Node*)malloc(sizeof(Node));
 	Node *current = head;
 	ptr->cabin = num;
 	ptr->next = NULL;
-	
 	if(head == NULL)
+	{
 		head = ptr;
+		h_stack[rail] = head;
+		printf("new head establish\n");
+	}
 	else
 	{
 		while(current->next != NULL)
@@ -116,13 +155,24 @@ void enter(Node *head,int rail,int num)
 	printf("%d entered\n",num);
 }
 
-void leave(Node *head ,int rail)
+void leave(int rail,Node** h_stack)
 {
+	head = h_stack[rail];
 	Node *current = head;
+	Node *prev = current;
 	while(current->next != NULL)
 	{
+		prev = current;
 		current = current->next;
 	}
-	free(current);
+	if(current == head)
+	{
+		h_stack[rail] = 0;
+	}
+	else
+	{
+		prev->next = NULL;
+		free(current);
+	}
 }
 
