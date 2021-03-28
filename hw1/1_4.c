@@ -13,7 +13,6 @@ int main()
 {
 	char* input = (char*)malloc(sizeof(char) * Size);
 	int row = 0;
-	int i,j;
 	Input(input,&row);
 
 	int* column = (int*)malloc(sizeof(int) * (row+3));
@@ -170,7 +169,7 @@ void infix_to_postfix(char** infix,int* column, double** postfix,int row)
 
 int compare(char stack,char infix)
 {
-	int idx_stack = 0, idx_infix = 0,ans = 0;
+	int idx_stack = 0, idx_infix = 0;
 	while(instack_pri[idx_stack] != stack)
 	{idx_stack++;}
 	while(incoming_pri[idx_infix] != infix)
@@ -217,7 +216,8 @@ void calculation(double** postfix,int* column,int row)
 				}
 				else if(flag == 1)
 				{
-					stack[--top] = stack[top]*10+(postfix[i][j]-48);
+					top--;
+					stack[top] = stack[top]*10+(postfix[i][j]-48);
 					top++;
 				}
 			}
