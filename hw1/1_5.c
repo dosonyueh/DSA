@@ -16,6 +16,7 @@ void calculation(int,char**,Node**,Node**);
 void enter(int,int,Node**,Node**);
 void leave(int,Node**,Node**);
 void output(Node**,int);
+void migrate(int,int,Node**,Node**);
 Node *head;
 int main()
 {
@@ -148,7 +149,7 @@ void calculation(int n,char** oper,Node** h_stack,Node** t_stack)
 						space[k] = j;
 						k++;
 					}
-					j++
+					j++;
 				}
 				for(c = space[0]+1;c<space[1];c++)
 					r_a = r_a*10 +(int)oper[i][c]-48;
@@ -222,7 +223,7 @@ void enter(int rail,int num,Node** h_stack,Node** t_stack )
 	}
 }
 
-void leave(int rail,Node** h_stack)
+void leave(int rail,Node** h_stack,Node** t_stack)
 {
 	head = h_stack[rail];
 	Node *current = head;
@@ -243,7 +244,7 @@ void leave(int rail,Node** h_stack)
 	else
 	{
 		prev->next = NULL;
-		t_stack[rail] = ptr;
+		t_stack[rail] = prev;
 		free(current);
 	}
 }
