@@ -2,33 +2,35 @@
 #include <stdio.h>
 #include <string.h>
 #define Size 1000000
-void Input(char*,int *);
+void Input(char*,int *,int *,int*);
 int compare(char,char);
 void infix_to_postfix(char** , int*, double**,int);
-void Input_to_infix(char [],int* ,int* ,char**);
+void Input_to_infix(char [],int* ,int* ,char**,int);
 char incoming_pri[7] = {'#',')','+','-','*','/','('};
 char instack_pri[6] = {'#','(','+','-','*','/'};
 void calculation(double**,int*,int);
 int main()
 {
-	char* input = (char*)malloc(sizeof(char) * Size);
-	int row = 0;
-	Input(input,&row);
+//	char* input = (char*)malloc(sizeof(char) * Size);
+	char* input = calloc(Size,sizeof(char));
+	int row = 0,max = 0,len = 0;
+	Input(input,&row,&max,&len);
 
-	int* column = (int*)malloc(sizeof(int) * (row+3));
+//	int* column = (int*)malloc(sizeof(int) * (row+3));
+	int* column = calloc(row+3,sizeof(int));
 	char** infix;
-	infix = (char**)malloc(sizeof(char*) * (row+3));
+	infix = (char**)calloc(row+3,sizeof(char*));
 	for(int a = 0;a<row+3;a++)
-		infix[a]=(char*)malloc(Size * sizeof(char));
+		infix[a]=calloc(max,sizeof(char));
 
-	Input_to_infix(input,column,&row,infix);
+	Input_to_infix(input,column,&row,infix,len);
 
 	free(input);
 
 	double** postfix;
-	postfix = (double**)malloc(sizeof(double*) * (row+3));
+	postfix = calloc(row+3,sizeof(double*));
 	for(int a = 0;a<row+3;a++)
-		postfix[a]=(double*)malloc(Size *sizeof(double));
+		postfix[a]=calloc(max,sizeof(double));
 	
 	infix_to_postfix(infix,column,postfix,row);
 
@@ -44,10 +46,9 @@ int main()
 	
 	return 0;
 }
-void Input_to_infix(char input[],int* column,int* row ,char** infix)
+void Input_to_infix(char input[],int* column,int* row ,char** infix,int len)
 {
-	int i = 0,j = 0,k = 0,len = strlen(input);
-	printf("len = %d\n",len);
+	int i = 0,j = 0,k = 0;
 	for(i = 0 ; i< len ; i++)
 	{
 		infix[j][k] = input[i];
@@ -62,19 +63,27 @@ void Input_to_infix(char input[],int* column,int* row ,char** infix)
 	}
 	
 }
-void Input(char input[],int* row)
+void Input(char input[],int* row,int* max,int* len)
 {
-	int i = 0,len = 0,j = 0,k = 0;
+	int i = 0,j = 0,k = 0;
 	while(scanf("%[^EOF],s",input) != EOF)
 	{	
-		len = strlen(input);
+		//len = strlen(input);
 	}
-	for(i = 0;i<len;i++)
+	for(i = 0;i<Size;i++)
+	{
+		if(input[i] != '\000')
+			*len++;
+		else
+		{}
+	}	
+	for(i = 0;i<*len;i++)
 	{
 		k++;
 		if(input[i] == '\n')
 		{//#代表一列的結束
 			(*row)++;
+			if(k>*max)*max = k;
 			k = 0;
 			j++;
 
@@ -87,7 +96,7 @@ void infix_to_postfix(char** infix,int* column, double** postfix,int row)
 	//flag用來判斷連續為+,- 可直接輸出
 	int top = 0, i = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
 	for(i = 0;i < row ; i++){
-		char *stack = (char*)malloc(sizeof(char)*Size);
+		char *stack = calloc(Size,sizeof(char));
 		stack[top] = '#';
 		top = 0;idx_postfix = 0;num = 0; flag = 1,flag_2 = 0;
 		for(j = 0;j < column[i]+1 ; j++)
@@ -184,7 +193,7 @@ void calculation(double** postfix,int* column,int row)
 	int i = 0,j = 0,top = 0,flag = 0;
 	for(i = 0 ; i<row ; i++)
 	{
-		double *stack =(double*) malloc(sizeof(double) * Size);
+		double *stack = calloc(Size,sizeof(double));
 		flag = 0;
 		j = 0;top = 0;
 		while(postfix[i][j] != 0)
@@ -227,5 +236,4 @@ void calculation(double** postfix,int* column,int row)
 		printf("%.15f\n",stack[top-1]);
 		free(stack);
 	}
-
 }
