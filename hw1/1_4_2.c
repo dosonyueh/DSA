@@ -5,68 +5,34 @@
 void Input(char**,int *,int *);
 int compare(char,char);
 void infix_to_postfix(char** , int*, double*,int);
-void Input_to_infix(char [],int* ,int* ,char**);
 char incoming_pri[7] = {'#',')','+','-','*','/','('};
 char instack_pri[6] = {'#','(','+','-','*','/'};
 void calculation(double*,int*);
 int main()
 {
-//	char* input = (char*)malloc(sizeof(char) * Size);
 	int row = 0,i = 0;
-//	Input(input,&row);
-
 	int* column = (int*)malloc(sizeof(int) * Size);
 	char** infix;
 	infix = (char**)malloc(sizeof(char*) * Size);
-//	for(int a = 0;a<Size;a++)
-//		infix[a]=(char*)malloc(Size * sizeof(char));
 	Input(infix,&row,column);
-//	int* column = (int*)malloc(sizeof(int) * (row+3));
-//	Input_to_infix(input,column,&row,infix);
-
-//	free(input);
-
 	double* postfix;
 	postfix = (double*)malloc(sizeof(double) * Size);
 	for(i = 0;i<row;i++)
 	{
 		infix_to_postfix(infix,column,postfix,i);
-//	for(int a = 0;a<row+3;a++)
-//		free(infix[a]);
-//	free(infix);
 		calculation(postfix,column);
-//	for(int a = 0;a<row+3;a++)
-//		free(postfix[a]);
-//	free(postfix);
-//	}
 	}
 	free(column);
-	
 	return 0;
-}
-void Input_to_infix(char input[],int* column,int* row ,char** infix)
-{
-	int i = 0,j = 0,k = 0,len = strlen(input);
-	for(i = 0 ; i< len ; i++)
-	{
-		infix[j][k] = input[i];
-		k++;
-		if(input[i] == '\n')
-		{
-			infix[j][k-1] = '#';
-			column[j] = k-1;
-			k = 0;
-			j++;
-		}
-	}
-	
 }
 void Input(char** infix,int* row,int* column)
 {
 	int i = 0,len = 0,j = 0,k = 0,idx = 0;
+	char *str = malloc(sizeof(char) * Size);
 	while(1)
 	{
-		char *str = malloc(sizeof(char) * Size);
+	//	char *str = malloc(sizeof(char) * Size);
+		str = {0}
 		if(fgets(str,Size,stdin) == NULL)break;
 		infix[idx] = malloc(sizeof(char) * Size);
 		infix[idx] = str;
@@ -81,28 +47,12 @@ void Input(char** infix,int* row,int* column)
 		}
 		idx++;
 	}
-/*	while(scanf("%[^EOF],s",input) != EOF)
-	{	
-		len = strlen(input);
-	}
-	for(i = 0;i<len;i++)
-	{
-		k++;
-		if(input[i] == '\n')
-		{//#代表一列的結束
-			(*row)++;
-			k = 0;
-			j++;
-
-		}
-	}*/
 }
 
 void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 {
 	//flag用來判斷連續為+,- 可直接輸出
 	int top = 0, i = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
-//	for(i = 0;i < row ; i++){
 		char *stack = (char*)malloc(sizeof(char)*Size);
 		stack[top] = '#';
 		top = 0;idx_postfix = 0;num = 0; flag = 1,flag_2 = 0;
@@ -133,8 +83,8 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 					num = 0;
 					while(compare(stack[top],infix[numofrow][j]))
 					{
-						postfix[idx_postfix] = stack[top--];
-						idx_postfix++;
+						postfix[idx_postfix++] = stack[top--];
+						//idx_postfix++;
 						flag = 1;
 					}
 					stack[++top] = infix[numofrow][j];
@@ -152,8 +102,8 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 					{
 						while(compare(stack[top],infix[numofrow][j]))
 						{
-							postfix[idx_postfix] = stack[top--];
-							idx_postfix++;
+							postfix[idx_postfix++] = stack[top--];
+							//idx_postfix++;
 						}
 						stack[++top] = infix[numofrow][j];
 						flag = 1;
@@ -163,16 +113,16 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 					if(num != 0)
 					{
 						idx_postfix--;
-						postfix[idx_postfix] = infix[numofrow][j] + ((postfix[idx_postfix]-48)*10);
-						idx_postfix++;
+						postfix[idx_postfix++] = infix[numofrow][j] + ((postfix[idx_postfix]-48)*10);
+						//idx_postfix++;
 						flag_2++;
 					}
 					else if(num == 0)
 						postfix[idx_postfix++] = infix[numofrow][j];
 					if(flag == 2)
 					{
-						postfix[idx_postfix] = stack[top--];
-						idx_postfix++;
+						postfix[idx_postfix++] = stack[top--];
+						//idx_postfix++;
 					}
 					flag = 0;
 					num = 1;
@@ -181,7 +131,6 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 		}
 		column[numofrow] -= flag_2;
 		free(stack);
-//	}
 }
 
 int compare(char stack,char infix)
@@ -198,8 +147,6 @@ int compare(char stack,char infix)
 void calculation(double* postfix,int* column)
 {
 	int i = 0,j = 0,top = 0,flag = 0;
-//	for(i = 0 ; i<row ; i++)
-//	{
 		double *stack =(double*) malloc(sizeof(double) * Size);
 		flag = 0;
 		j = 0;top = 0;
@@ -242,6 +189,4 @@ void calculation(double* postfix,int* column)
 		}
 		printf("%.15f\n",stack[top-1]);
 		free(stack);
-//	}
-
 }
