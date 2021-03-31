@@ -163,7 +163,7 @@ void calculation(int n,char** oper,Node** h_stack,Node** t_stack)
 }
 
 void migrate(int r_a,int r_b,Node** h_stack,Node** t_stack)
-{
+{//反轉linked list
 	head = h_stack[r_a];
 	Node *temp = (Node*)calloc(1,sizeof(Node));
 	Node *current = head;
@@ -181,9 +181,11 @@ void migrate(int r_a,int r_b,Node** h_stack,Node** t_stack)
 	}
 
 	head = h_stack[r_b];
+	//反轉後接上
 	if(head == NULL)
 	{
-		head = h_stack[r_a];
+		h_stack[r_b] = h_stack[r_a];
+		t_stack[r_b] = t_stack[r_a];
 	}
 	else
 	{
@@ -195,6 +197,7 @@ void migrate(int r_a,int r_b,Node** h_stack,Node** t_stack)
 		current->next = h_stack[r_a];
 		current->next->before = current;
 		t_stack[r_b] = t_stack[r_a];
+		h_stack[r_a] = NULL;t_stack[r_a] = NULL;
 	}
 }
 
@@ -240,12 +243,14 @@ void leave(int rail,Node** h_stack,Node** t_stack)
 		h_stack[rail] = 0;
 		t_stack[rail] = 0;
 		free(current);
+		current = NULL;
 	}
 	else
 	{
 		prev->next = NULL;
 		t_stack[rail] = prev;
 		free(current);
+		current = NULL;
 	}
 }
 
@@ -253,6 +258,7 @@ void output(Node** h_stack,int k)
 {
 	int i = 0;
 	Node* current,*prev;
+	Node* test = h_stack[2];
 	for(i = 0 ; i < k ; i++)
 	{
 		head = h_stack[i];
@@ -264,6 +270,7 @@ void output(Node** h_stack,int k)
 			prev = current;
 			current = current->next;
 			free(prev);
+			prev = NULL;
 		}
 		printf("\n");
 
