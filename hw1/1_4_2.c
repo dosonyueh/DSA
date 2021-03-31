@@ -2,63 +2,65 @@
 #include <stdio.h>
 #include <string.h>
 #define Size 1000000
-void Input(char**,int *,int *);
+void Input(char*,int *,int*);
 int compare(char,char);
-void infix_to_postfix(char** , int*, double*,int);
+void infix_to_postfix(char* , int*, double*);
 char incoming_pri[7] = {'#',')','+','-','*','/','('};
 char instack_pri[6] = {'#','(','+','-','*','/'};
-void calculation(double*,int*);
+void calculation(double*);
 int main()
 {
-	int row = 0,i = 0;
-	int* column = (int*)malloc(sizeof(int) * Size);
-	char** infix;
-	infix = (char**)malloc(sizeof(char*) * Size);
-	Input(infix,&row,column);
+	int row = 0,i = 0,end = 0;
+	int column = 0;
+	char* infix;
+//	infix = (char*)malloc(sizeof(char) * Size);
+//	Input(infix,&row,column);
 	double* postfix;
 	postfix = (double*)malloc(sizeof(double) * Size);
-	for(i = 0;i<row;i++)
-	{
-		infix_to_postfix(infix,column,postfix,i);
-		calculation(postfix,column);
+	//char* str;
+	while(1)
+	{	
+		infix = (char*)malloc(sizeof(char) * Size);
+		//if(Input(infix,&column) == 1)break;
+		Input(infix,&column,&end);
+		if(end == 1)break;
+		//char *str = malloc(sizeof(char)*Size);
+		//if(fgets(str,Size,stdin)==NULL)break;
+		infix_to_postfix(infix,&column,postfix);
+		calculation(postfix);
 	}
-	free(column);
 	return 0;
 }
-void Input(char** infix,int* row,int* column)
+void Input(char* infix,int* column,int* end)
 {
-	int i = 0,len = 0,j = 0,k = 0,idx = 0;
-	char *str = malloc(sizeof(char) * Size);
-	while(1)
+	int i = 0;
+	//char *str = malloc(sizeof(char) * Size);
+	if(fgets(infix,Size,stdin) == NULL)
 	{
-	//	char *str = malloc(sizeof(char) * Size);
-		str = {0}
-		if(fgets(str,Size,stdin) == NULL)break;
-		infix[idx] = malloc(sizeof(char) * Size);
-		infix[idx] = str;
-		for(i = 0; i<Size;i++)
+		*end = 1;
+		return;
+	}
+	//infix = str;
+	for(i = 0; i<Size;i++)
+	{
+		if(infix[i] == '\n')
 		{
-			if(infix[idx][i] == '\n')
-			{
-				column[idx] = i;
-				infix[idx][i] = '#';
-				(*row)++;
-			}
+			*column = i;
+			infix[i] = '#';
 		}
-		idx++;
 	}
 }
 
-void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
+void infix_to_postfix(char* infix,int* column, double* postfix)
 {
 	//flag用來判斷連續為+,- 可直接輸出
-	int top = 0, i = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
+	int top = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
 		char *stack = (char*)malloc(sizeof(char)*Size);
 		stack[top] = '#';
 		top = 0;idx_postfix = 0;num = 0; flag = 1,flag_2 = 0;
-		for(j = 0;j < column[numofrow]+1 ; j++)
+		for(j = 0;j < (*column)+1; j++)
 		{
-			switch(infix[numofrow][j])
+			switch(infix[j])
 			{
 				case ')'://下個為 ) 則將 ( 之前的堆疊取出
 					num = 0;
@@ -81,13 +83,13 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 				case '*':
 				case '/':
 					num = 0;
-					while(compare(stack[top],infix[numofrow][j]))
+					while(compare(stack[top],infix[j]))
 					{
 						postfix[idx_postfix++] = stack[top--];
 						//idx_postfix++;
 						flag = 1;
 					}
-					stack[++top] = infix[numofrow][j];
+					stack[++top] = infix[j];
 					flag = 1;
 					break;
 				case '+':
@@ -95,17 +97,17 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 					num = 0;
 					if(flag == 1)
 					{
-						stack[++top] = infix[numofrow][j];
+						stack[++top] = infix[j];
 						flag = 2;
 					}
 					else
 					{
-						while(compare(stack[top],infix[numofrow][j]))
+						while(compare(stack[top],infix[j]))
 						{
 							postfix[idx_postfix++] = stack[top--];
 							//idx_postfix++;
 						}
-						stack[++top] = infix[numofrow][j];
+						stack[++top] = infix[j];
 						flag = 1;
 					}
 					break;
@@ -113,12 +115,12 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 					if(num != 0)
 					{
 						idx_postfix--;
-						postfix[idx_postfix++] = infix[numofrow][j] + ((postfix[idx_postfix]-48)*10);
+						postfix[idx_postfix++] = infix[j] + ((postfix[idx_postfix]-48)*10);
 						//idx_postfix++;
 						flag_2++;
 					}
 					else if(num == 0)
-						postfix[idx_postfix++] = infix[numofrow][j];
+						postfix[idx_postfix++] = infix[j];
 					if(flag == 2)
 					{
 						postfix[idx_postfix++] = stack[top--];
@@ -129,7 +131,7 @@ void infix_to_postfix(char** infix,int* column, double* postfix,int numofrow)
 				break;
 			}
 		}
-		column[numofrow] -= flag_2;
+		column -= flag_2;
 		free(stack);
 }
 
@@ -144,7 +146,7 @@ int compare(char stack,char infix)
 	return infix;
 }
 
-void calculation(double* postfix,int* column)
+void calculation(double* postfix)
 {
 	int i = 0,j = 0,top = 0,flag = 0;
 		double *stack =(double*) malloc(sizeof(double) * Size);
