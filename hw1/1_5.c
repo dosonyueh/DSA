@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #define Col 100
-#define Size 10000
+#define Size 1000000
 void Input_spec(int*,int*);
 void Input_oper(int*,char**,int*);
 
@@ -197,8 +197,8 @@ void migrate(int r_a,int r_b,Node** h_stack,Node** t_stack)
 		current->next = h_stack[r_a];
 		current->next->before = current;
 		t_stack[r_b] = t_stack[r_a];
-		h_stack[r_a] = NULL;t_stack[r_a] = NULL;
 	}
+	h_stack[r_a] = NULL;t_stack[r_a] = NULL;
 }
 
 
