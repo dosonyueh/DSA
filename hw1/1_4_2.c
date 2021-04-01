@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define Size 1000000
+#define Size 500000
+#define Size_s 1000
 void Input(char*,int *,int*);
 int compare(char,char);
 void infix_to_postfix(char* , int*, double*);
@@ -13,19 +14,13 @@ int main()
 	int row = 0,i = 0,end = 0;
 	int column = 0;
 	char* infix;
-//	infix = (char*)malloc(sizeof(char) * Size);
-//	Input(infix,&row,column);
 	double* postfix;
 	postfix = (double*)malloc(sizeof(double) * Size);
-	//char* str;
 	while(1)
 	{	
 		infix = (char*)malloc(sizeof(char) * Size);
-		//if(Input(infix,&column) == 1)break;
 		Input(infix,&column,&end);
 		if(end == 1)break;
-		//char *str = malloc(sizeof(char)*Size);
-		//if(fgets(str,Size,stdin)==NULL)break;
 		infix_to_postfix(infix,&column,postfix);
 		calculation(postfix);
 	}
@@ -34,13 +29,11 @@ int main()
 void Input(char* infix,int* column,int* end)
 {
 	int i = 0;
-	//char *str = malloc(sizeof(char) * Size);
 	if(fgets(infix,Size,stdin) == NULL)
 	{
 		*end = 1;
 		return;
 	}
-	//infix = str;
 	for(i = 0; i<Size;i++)
 	{
 		if(infix[i] == '\n')
@@ -55,7 +48,7 @@ void infix_to_postfix(char* infix,int* column, double* postfix)
 {
 	//flag用來判斷連續為+,- 可直接輸出
 	int top = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
-		char *stack = (char*)malloc(sizeof(char)*Size);
+		char *stack = (char*)malloc(sizeof(char)*Size_s);
 		stack[top] = '#';
 		top = 0;idx_postfix = 0;num = 0; flag = 1,flag_2 = 0;
 		for(j = 0;j < (*column)+1; j++)
@@ -86,7 +79,6 @@ void infix_to_postfix(char* infix,int* column, double* postfix)
 					while(compare(stack[top],infix[j]))
 					{
 						postfix[idx_postfix++] = stack[top--];
-						//idx_postfix++;
 						flag = 1;
 					}
 					stack[++top] = infix[j];
@@ -105,7 +97,6 @@ void infix_to_postfix(char* infix,int* column, double* postfix)
 						while(compare(stack[top],infix[j]))
 						{
 							postfix[idx_postfix++] = stack[top--];
-							//idx_postfix++;
 						}
 						stack[++top] = infix[j];
 						flag = 1;
@@ -116,7 +107,6 @@ void infix_to_postfix(char* infix,int* column, double* postfix)
 					{
 						idx_postfix--;
 						postfix[idx_postfix++] = infix[j] + ((postfix[idx_postfix]-48)*10);
-						//idx_postfix++;
 						flag_2++;
 					}
 					else if(num == 0)
@@ -124,7 +114,6 @@ void infix_to_postfix(char* infix,int* column, double* postfix)
 					if(flag == 2)
 					{
 						postfix[idx_postfix++] = stack[top--];
-						//idx_postfix++;
 					}
 					flag = 0;
 					num = 1;
@@ -149,7 +138,7 @@ int compare(char stack,char infix)
 void calculation(double* postfix)
 {
 	int i = 0,j = 0,top = 0,flag = 0;
-		double *stack =(double*) malloc(sizeof(double) * Size);
+		double *stack =(double*) malloc(sizeof(double) * Size_s);
 		flag = 0;
 		j = 0;top = 0;
 		while(postfix[j] != 0)
