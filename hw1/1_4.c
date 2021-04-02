@@ -1,180 +1,149 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define Size 1000000
-void Input(char*,int *,int *,int*);
+#define Size 80000
+#define Size_s 10000
+//void Input(char*,int *,int*);
 int compare(char,char);
-void infix_to_postfix(char** , int*, double**,int);
-void Input_to_infix(char [],int* ,int* ,char**,int);
+int pri(char);
+void infix_to_postfix(char* , int*, double*);
 char incoming_pri[7] = {'#',')','+','-','*','/','('};
 char instack_pri[6] = {'#','(','+','-','*','/'};
-void calculation(double**,int*,int);
+char stack_c[Size_s] = {0};
+double stack_d[Size_s] = {0};
+void calculation(double*);
 int main()
 {
-//	char* input = (char*)malloc(sizeof(char) * Size);
-	char* input = calloc(Size,sizeof(char));
-	int row = 0,max = 0,len = 0;
-	Input(input,&row,&max,&len);
-
-//	int* column = (int*)malloc(sizeof(int) * (row+3));
-	int* column = calloc(row+3,sizeof(int));
-	char** infix;
-	infix = (char**)calloc(row+3,sizeof(char*));
-	for(int a = 0;a<row+3;a++)
-		infix[a]=calloc(max,sizeof(char));
-
-	Input_to_infix(input,column,&row,infix,len);
-
-	free(input);
-
-	double** postfix;
-	postfix = calloc(row+3,sizeof(double*));
-	for(int a = 0;a<row+3;a++)
-		postfix[a]=calloc(max,sizeof(double));
-	
-	infix_to_postfix(infix,column,postfix,row);
-
-	for(int a = 0;a<row+3;a++)
-		free(infix[a]);
-	free(infix);
-	
-	calculation(postfix,column,row);
-	for(int a = 0;a<row+3;a++)
-		free(postfix[a]);
-	free(postfix);
-	free(column);
-	
+	int row = 0,i = 0,end = 0;
+	int column = 0;
+	char* infix;
+//	infix = (char*)malloc(sizeof(char) * Size);
+//	Input(infix,&row,column);
+	double* postfix;
+	postfix = (double*)malloc(sizeof(double) * Size);
+	infix = (char*)malloc(sizeof(char) * Size);
+	//char* str;
+	while(1)
+	{
+		memset(infix,0,Size);
+		memset(postfix,0,Size);	
+		//if(Input(infix,&column) == 1)break;
+		//
+		if(fgets(infix,Size,stdin) == NULL)
+			end = 1;
+		column = strlen(infix)-1;
+		infix[column] = '#';
+		//Input(infix,&column,&end);
+		if(end == 1)break;
+		//char *str = malloc(sizeof(char)*Size);
+		//if(fgets(str,Size,stdin)==NULL)break;
+		infix_to_postfix(infix,&column,postfix);
+		calculation(postfix);
+	}
 	return 0;
 }
-void Input_to_infix(char input[],int* column,int* row ,char** infix,int len)
+/*void Input(char* infix,int* column,int* end)
 {
-	int i = 0,j = 0,k = 0;
-	for(i = 0 ; i< len ; i++)
+	int i = 0;
+	//char *str = malloc(sizeof(char) * Size);
+	if(fgets(infix,Size,stdin) == NULL)
 	{
-		infix[j][k] = input[i];
-		k++;
-		if(input[i] == '\n')
+		*end = 1;
+		return;
+	}
+	//infix = str;
+	for(i = 0; i<Size;i++)
+	{
+		if(infix[i] == '\n')
 		{
-			infix[j][k-1] = '#';
-			column[j] = k-1;
-			k = 0;
-			j++;
-		}
-	}
-	
-}
-void Input(char input[],int* row,int* max,int* len)
-{
-	int i = 0,j = 0,k = 0;
-	while(scanf("%[^EOF],s",input) != EOF)
-	{	
-		//len = strlen(input);
-	}
-	for(i = 0;i<Size;i++)
-	{
-		if(input[i] != '\000')
-			*len++;
-		else
-		{}
-	}	
-	for(i = 0;i<*len;i++)
-	{
-		k++;
-		if(input[i] == '\n')
-		{//#代表一列的結束
-			(*row)++;
-			if(k>*max)*max = k;
-			k = 0;
-			j++;
-
+			*column = i;
+			infix[i] = '#';
 		}
 	}
 }
-
-void infix_to_postfix(char** infix,int* column, double** postfix,int row)
+*/
+void infix_to_postfix(char* infix,int* column, double* postfix)
 {
 	//flag用來判斷連續為+,- 可直接輸出
-	int top = 0, i = 0 ,j = 0,flag = 1 ,idx_postfix = 0,num = 0,flag_2 = 0;
-	for(i = 0;i < row ; i++){
-		char *stack = calloc(Size,sizeof(char));
-		stack[top] = '#';
-		top = 0;idx_postfix = 0;num = 0; flag = 1,flag_2 = 0;
-		for(j = 0;j < column[i]+1 ; j++)
+	int top = 0 ,j = 0,idx_postfix = 0,num = 0,flag_2 = 0;
+//		char *stack = (char*)malloc(sizeof(char)*Size_s);
+		stack_c[top] = '#';
+		for(j = 0;j < (*column)+1; j++)
 		{
-			switch(infix[i][j])
+			switch(infix[j])
 			{
 				case ')'://下個為 ) 則將 ( 之前的堆疊取出
 					num = 0;
-					while(stack[top] != '(')
+					while(stack_c[top] != '(')
 					{
-						postfix[i][idx_postfix] = stack[top--];
-						idx_postfix++;
+						postfix[idx_postfix++] = stack_c[top--];
 					}
 					top--;
 					break;
 				case '#'://下個為 # 則將堆疊全部取出
 					num = 0;
-					while(stack[top] != '#')
+					while(stack_c[top] != '#')
 					{
-						postfix[i][idx_postfix] = stack[top--];
+						postfix[idx_postfix] = stack_c[top--];
 						idx_postfix++;
 					}
 					break;
 				case '(':
+					stack_c[++top] = infix[j];
+					num = 0;
+					break;
 				case '*':
 				case '/':
 					num = 0;
-					while(compare(stack[top],infix[i][j]))
+				//	while(pri(stack_c[top])>=pri(infix[j]))
+					while(compare(stack_c[top],infix[j]))
 					{
-						postfix[i][idx_postfix] = stack[top--];
-						idx_postfix++;
-						flag = 1;
+						postfix[idx_postfix++] = stack_c[top--];
+						//idx_postfix++;
 					}
-					stack[++top] = infix[i][j];
-					flag = 1;
+					stack_c[++top] = infix[j];
 					break;
 				case '+':
 				case '-':
 					num = 0;
-					if(flag == 1)
+				/*	if(flag == 1)
 					{
-						stack[++top] = infix[i][j];
+						stack_c[++top] = infix[j];
 						flag = 2;
 					}
 					else
-					{
-						while(compare(stack[top],infix[i][j]))
+				*/	{
+				//		while(pri(stack_c[top])>=pri(infix[j]))
+						while(compare(stack_c[top],infix[j]))
 						{
-							postfix[i][idx_postfix] = stack[top--];
-							idx_postfix++;
+							postfix[idx_postfix++] = stack_c[top--];
+							//idx_postfix++;
 						}
-						stack[++top] = infix[i][j];
-						flag = 1;
+						stack_c[++top] = infix[j];
 					}
 					break;
 				default :
 					if(num != 0)
 					{
 						idx_postfix--;
-						postfix[i][idx_postfix] = infix[i][j] + ((postfix[i][idx_postfix]-48)*10);
-						idx_postfix++;
+						postfix[idx_postfix++] = infix[j] + ((postfix[idx_postfix]-48)*10);
+						//idx_postfix++;
 						flag_2++;
 					}
 					else if(num == 0)
-						postfix[i][idx_postfix++] = infix[i][j];
-					if(flag == 2)
+						postfix[idx_postfix++] = infix[j];
+				/*	if(flag == 2)
 					{
-						postfix[i][idx_postfix] = stack[top--];
-						idx_postfix++;
+						postfix[idx_postfix++] = stack_c[top--];
+						//idx_postfix++;
 					}
 					flag = 0;
-					num = 1;
+				*/	num = 1;
 				break;
 			}
 		}
-		column[i] -= flag_2;
-		free(stack);
-	}
+		column -= flag_2;
+		memset(stack_c,0,Size_s);
 }
 
 int compare(char stack,char infix)
@@ -187,53 +156,70 @@ int compare(char stack,char infix)
 	infix = idx_stack/2 >= idx_infix/2 ? 1:0 ;
 	return infix;
 }
-
-void calculation(double** postfix,int* column,int row)
+int pri(char oper)
 {
-	int i = 0,j = 0,top = 0,flag = 0;
-	for(i = 0 ; i<row ; i++)
+	switch(oper)
 	{
-		double *stack = calloc(Size,sizeof(double));
-		flag = 0;
-		j = 0;top = 0;
-		while(postfix[i][j] != 0)
+		case '+':
+			return 1;
+		case '-':
+			return 1;
+		case '*':
+			return 2;
+		case '/':
+			return 2;
+		case '#':
+			return 0;
+		case '(':
+			return 0;
+	}
+}
+
+void calculation(double* postfix)
+{
+	int j = 0,top = 0,flag = 0;
+//		double *stack =(double*) malloc(sizeof(double) * Size_s);
+		while(postfix[j] != 0)
 		{
-			if(postfix[i][j] == 43)
-			{
-				stack[top-2] += stack[top-1];
-				top --;flag = 0;
+			if(postfix[j] == 43)
+			{	
+				top--;
+				stack_d[top-1] += stack_d[top];
+				flag = 0;
 			}
-			else if(postfix[i][j] == 42)
+			else if(postfix[j] == 42)
 			{
-				stack[top-2] *= stack[top-1];
-				top --;flag = 0;
+				top--;
+				stack_d[top-1] *= stack_d[top];
+				flag = 0;
 			}
-			else if(postfix[i][j] == 45)
+			else if(postfix[j] == 45)
 			{
-				stack[top-2] -= stack[top-1];
-				top--;flag = 0;
+				top--;
+				stack_d[top-1] -= stack_d[top];
+				flag = 0;
 			}
-			else if(postfix[i][j] == 47)
+			else if(postfix[j] == 47)
 			{
-				stack[top-2] /= stack[top-1];
-				top--;flag = 0;
+				top--;
+				stack_d[top-1] /= stack_d[top];
+				flag = 0;
 			}
 			else
 			{	if(flag == 0)
 				{
-					stack[top++] = postfix[i][j] -48;
+					stack_d[top++] = postfix[j] -48;
 					flag = 0;
 				}
 				else if(flag == 1)
 				{
-					top--;
-					stack[top] = stack[top]*10+(postfix[i][j]-48);
+					
+					stack_d[--top] = stack_d[top]*10+(postfix[j]-48);
 					top++;
 				}
 			}
 			j++;
 		}
-		printf("%.15f\n",stack[top-1]);
-		free(stack);
-	}
+		printf("%.15f\n",stack_d[top-1]);
+		memset(stack_d,0,Size_s);
 }
