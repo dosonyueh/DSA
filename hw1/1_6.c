@@ -18,7 +18,46 @@ typedef struct upper_node U_Node;
 
 int number[NumofNode] = {0};
 
-void Query(int start,int end,int size,U_Node** u_stack)
+void merge(int* seq,int l,int m,int r)
+{
+	int i,j,k;
+	int num1 = m - l +1;
+	int num2 = r - m;
+	int left[num1],right[num2];
+
+	for(i = 0;i < num1;i++)
+		left[i] = seq[l+i];
+	for(j = 0;j < num2;j++)
+		right[j] = seq[m+1+j];
+	i = 0;j = 0;k = l;
+	
+	while(i < num1 && j < num2)
+	{
+		if(left[i] <= right[j])
+			seq[k++] = left[i++];
+		else 
+			seq[k++] = right[j++];
+	}
+	while(i < num1)
+		seq[k++] = left[i++];
+	while(j < num2)
+		seq[k++] = right[j++];		
+}
+
+void merge_sort(int* seq, int l,int r)
+{
+	if(l < r)
+	{
+		int m = (l+r)/2;
+		merge_sort(seq,l,m);
+		merge_sort(seq,m+1,r);
+
+		merge(seq,l,m,r);
+	}
+}
+
+
+void Query(int start,int end,int n,U_Node** u_stack)
 {
 	int start_node = 0,end_node = 0,i = 0,num = 0;
 	int* seq = (int*)malloc(sizeof(int) * (end-start+1));
@@ -41,6 +80,8 @@ void Query(int start,int end,int size,U_Node** u_stack)
 		seq[i] = current->element;
 		current = current->next;
 	}
+	merge_sort(seq,0,(end-start+1));
+	printf("%d\n",seq[n]);
 }
 
 void init(int* initial,int n,Node** n_stack,int* numofnode,U_Node** u_stack)
@@ -99,10 +140,11 @@ int main()
 		scanf("%d",&initial[i]);
 	}
 	init(initial,n,n_stack,&numofnode,u_stack);
-	Query(4,11,1,u_stack);
-/*	for(i = 0;i<q;i++)
+	Query(3,5,1,u_stack);
+	for(i = 0;i<q;i++)
 	{
 		fgets(oper,50,stdin);
+		
 	}
-*/
+
 }
