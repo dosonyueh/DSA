@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define NumofNode 1000
+#define NumofNode 50000
 struct node{
 	int element;
 	struct node *next;
@@ -17,7 +17,8 @@ struct upper_node{
 typedef struct upper_node U_Node;
 
 int number[NumofNode] = {0};
-
+int ans[50000] = {0};
+int numofans = 0;
 void merge(int* seq,int l,int m,int r)
 {
 	int i,j,k;
@@ -80,8 +81,8 @@ void Query(int start,int end,int n,U_Node** u_stack)
 		seq[i] = current->element;
 		current = current->next;
 	}
-	merge_sort(seq,0,(end-start+1));
-	printf("%d\n",seq[n]);
+	merge_sort(seq,0,(end-start));
+	ans[numofans++] = seq[n-1];
 }
 
 void init(int* initial,int n,Node** n_stack,int* numofnode,U_Node** u_stack)
@@ -125,7 +126,7 @@ void init(int* initial,int n,Node** n_stack,int* numofnode,U_Node** u_stack)
 		number[i] = u_stack[i]->num;
 }
 
-void calculation(char* oper)
+void calculation(char* oper,U_Node** u_stack)
 {
 	int i = 0,a = 0,b = 0,c = 0,k = 0;
 	int start = 0,end = 0,numth = 0;
@@ -139,6 +140,7 @@ void calculation(char* oper)
 					space[k++] = i;
 				i++;
 			}
+			space[3] = i;
 			for(a = space[0]+1;a < space[1];a++)
 				start = start*10 + oper[a] - 48;
 			for(b = space[1]+1;b < space[2];b++)
@@ -165,12 +167,14 @@ int main()
 	{
 		scanf("%d",&initial[i]);
 	}
+	while((c = getchar()) != EOF && c != '\n');
 	init(initial,n,n_stack,&numofnode,u_stack);
-	Query(3,5,1,u_stack);
 	for(i = 0;i<q;i++)
 	{
 		fgets(oper,50,stdin);
-		calculation(oper);
+		calculation(oper,u_stack);
 	}
+	for(i = 0;i<numofans;i++)
+		printf("%d\n",ans[i]);
 
 }
