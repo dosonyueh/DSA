@@ -125,6 +125,32 @@ void init(int* initial,int n,Node** n_stack,int* numofnode,U_Node** u_stack)
 		number[i] = u_stack[i]->num;
 }
 
+void calculation(char* oper)
+{
+	int i = 0,a = 0,b = 0,c = 0,k = 0;
+	int start = 0,end = 0,numth = 0;
+	int space[5] = {0};
+	switch(oper[0])
+	{
+		case 'Q':
+			while(oper[i] != '\n')
+			{
+				if(oper[i] == ' ')
+					space[k++] = i;
+				i++;
+			}
+			for(a = space[0]+1;a < space[1];a++)
+				start = start*10 + oper[a] - 48;
+			for(b = space[1]+1;b < space[2];b++)
+				end = end*10 + oper[b] - 48;
+			for(c = space[2]+1;c < space[3];c++)
+				numth = numth*10 + oper[c] - 48;
+			Query(start,end,numth,u_stack);
+			break;
+
+	}
+}
+
 int main()
 {
 	int i = 0,n = 0,q = 0 ,a = 0,numofnode = 0;
@@ -144,7 +170,7 @@ int main()
 	for(i = 0;i<q;i++)
 	{
 		fgets(oper,50,stdin);
-		
+		calculation(oper);
 	}
 
 }
