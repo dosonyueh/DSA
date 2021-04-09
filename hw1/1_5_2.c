@@ -2,17 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 #define Col 100
-#define Size 10000
-void Input_spec(int*,int*);
-void Input_oper(int*,char**,int*);
-
+#define L 20
 struct node{
 	int cabin;
 	struct node *next;
 	struct node *before;
+	bool flag;
 };
 typedef struct node Node;
-void calculation(int,char**,Node**,Node**);
+void calculation(char*,Node**,Node**);
 void enter(int,int,Node**,Node**);
 void leave(int,Node**,Node**);
 void output(Node**,int);
@@ -20,97 +18,35 @@ void migrate(int,int,Node**,Node**);
 Node *head;
 int main()
 {
-	int n = 0 ,k = 0;
-	//Input_spec(&n,&k);
-	
-	char** oper = (char**)calloc(Size,sizeof(char*));
-	for(int a = 0; a < Size;a++)
-		oper[a] = (char*)calloc(Col,sizeof(char));
-	Input_oper(&n,oper,&k);
-
+	int i = 0,n = 0 ,k = 0;
+	char c;
+	scanf("%d %d",&k,&n);
+	while ((c = getchar()) != EOF && c != '\n');
+	char* input = (char*)calloc(L,sizeof(char));
+	char* oper = (char*)calloc(L,sizeof(char));
 	Node** h_stack = (Node**)calloc(k,sizeof(Node*));
 	Node** t_stack = (Node**)calloc(k,sizeof(Node*));
-
-	calculation(n,oper,h_stack,t_stack);
+	for(i = 0 ; i < n;i++)
+	{
+		fgets(input,L,stdin);
+		calculation(input,h_stack,t_stack);
+	}
 	output(h_stack,k);
 	free(h_stack);
-	for(int a = 0 ; a < Size;a++)
-		free(oper[a]);
-	free(oper);
-/*	enter(2,2,h_stack);
-	enter(3,4,h_stack);
-	enter(3,4,h_stack);
-	leave(2,h_stack);
-	Node* current = h_stack[12];
-	while(current != NULL)
-	{	
-		printf("%d\n",current->cabin);
-		current = current->next;
-	}
-*/
 	return 0;	
 }
 
-void Input_spec(int* n,int* k)
+void calculation(char* oper,Node** h_stack,Node** t_stack)
 {
-	char ch = 0;
-	scanf("%d %d",k,n);
-	while((ch = getchar()) != EOF && ch != '\n');
-/*	if(scanf("%d %d",k,n)==1)
-		while((ch = getchar()) != EOF && ch != '\n');
-	else
-		printf("enter fail!\n");
-*/}
-
-void Input_oper(int* n,char** oper,int* k)
-{
-	int a,b,len , i , j = 0 ,l = 0,num = 0;
-	char* input = (char*)calloc(Col*(Size),sizeof(char));
-	while(scanf("%[^EOF],s",input) != EOF)
-	{
-		len = strlen(input);
-	}
-	for(i = 0 ; i < len ; i++)
-	{
-		if(input[i] == ' ')
-			a = i;
-		if(input[i] == '\n')
-		{
-			b = i;
-			break;
-		}
-	}
-	for(i = 0 ; i < a;i++)
-		*k = *k*10+input[i]-48;
-	for(i = a+1 ; i < b;i++)
-		*n = *n*10+input[i]-48;
-	for(i = b+1 ; i < len ; i++)
-	{	
-		oper[j][l++] = input[i];
-		if(input[i] == '\n')
-		{
-			oper[j][l-1] = '\0';
-			j++;
-			l = 0;
-		}
-	}
-	free(input);
-		
-}
-
-void calculation(int n,char** oper,Node** h_stack,Node** t_stack)
-{
-	int i = 0,j = 0,rail = 0,cabin = 0,c = 0,d = 0,k = 0,r_a = 0,r_b = 0;
-	int space[10] = {0};
-	for(i = 0; i < n;i++)
-	{
+	int j = 0,rail = 0,cabin = 0,c = 0,d = 0,k = 0,r_a = 0,r_b = 0;
+	int space[5] = {0};
 		rail = 0,cabin = 0,j = 3,k = 0,r_a = 0,r_b = 0;
-		switch(oper[i][0])
+		switch(oper[0])
 		{
 			case 'e':
-				while(oper[i][j] != '\000')
+				while(oper[j] != '\n')
 				{
-					if(oper[i][j] == ' ')
+					if(oper[j] == ' ')
 					{
 						space[k] = j;
 						k++;
@@ -119,16 +55,16 @@ void calculation(int n,char** oper,Node** h_stack,Node** t_stack)
 				}
 				for(c = space[0]+1;c < space[1];c++)
 				{
-					rail = rail*10 + (int)oper[i][c] -48;
+					rail = rail*10 + oper[c] -48;
 				}
 				for(d = space[1]+1;d < j;d++)
-					cabin = cabin*10 + (int)oper[i][d] -48;
+					cabin = cabin*10 + oper[d] -48;
 				enter(rail,cabin,h_stack,t_stack);
 				break;
 			case 'l':
-				while(oper[i][j] != '\000')
+				while(oper[j] != '\n')
 				{
-					if(oper[i][j] == ' ')
+					if(oper[j] == ' ')
 					{
 						space[k] = j;
 						k++;
@@ -137,14 +73,14 @@ void calculation(int n,char** oper,Node** h_stack,Node** t_stack)
 				}
 				for(c = space[0]+1;c < j;c++)
 				{
-					rail = rail*10+ (int)oper[i][c] - 48;
+					rail = rail*10+ oper[c] - 48;
 				}
 				leave(rail,h_stack,t_stack);
 				break;
 			case 'm':
-				while(oper[i][j] != '\000')
+				while(oper[j] != '\n')
 				{
-					if(oper[i][j] == ' ')
+					if(oper[j] == ' ')
 					{
 						space[k] = j;
 						k++;
@@ -152,53 +88,44 @@ void calculation(int n,char** oper,Node** h_stack,Node** t_stack)
 					j++;
 				}
 				for(c = space[0]+1;c<space[1];c++)
-					r_a = r_a*10 +(int)oper[i][c]-48;
+					r_a = r_a*10 +oper[c]-48;
 				for(d = space[1]+1;d<j;d++)
-					r_b = r_b*10+(int)oper[i][d]-48;
+					r_b = r_b*10+oper[d]-48;
 				migrate(r_a,r_b,h_stack,t_stack);
 				break;
 		}
-
-	}
 }
 
 void migrate(int r_a,int r_b,Node** h_stack,Node** t_stack)
 {//反轉linked list
-	head = h_stack[r_a];
-	Node *temp = (Node*)calloc(1,sizeof(Node));
-	Node *current = head;
-	if(head == NULL)
+	Node *temp = (Node*)malloc(sizeof(Node));
+	Node *current;
+	if(h_stack[r_a] == NULL)
 		return;
+	temp = t_stack[r_a];
 	t_stack[r_a] = h_stack[r_a];
-	while(current != NULL)
-	{
-		if(current->next == NULL)
-			h_stack[r_a] = current;
-		temp = current->next;
-		current->next = current->before;
-		current->before = temp;
-		current = temp;
-	}
-
+	h_stack[r_a] = temp;
+//反轉後接上
 	head = h_stack[r_b];
-	//反轉後接上
 	if(head == NULL)
 	{
 		h_stack[r_b] = h_stack[r_a];
 		t_stack[r_b] = t_stack[r_a];
+		h_stack[r_b]->next = h_stack[r_b]->before;
+		h_stack[r_b]->before = NULL;
+		t_stack[r_b]->before = t_stack[r_b]->next;
+		t_stack[r_b]->next = NULL;
 	}
 	else
 	{
-		current = head;
-		while(current->next != NULL)
-		{
-			current = current->next;
-		}	
-		current->next = h_stack[r_a];
-		current->next->before = current;
+		t_stack[r_b]->next = h_stack[r_a];
+		h_stack[r_a]->next = h_stack[r_a]->before;
+		h_stack[r_a]->before = t_stack[r_b];
+		t_stack[r_a]->before = t_stack[r_a]->next;
+		t_stack[r_a]->next = NULL;
 		t_stack[r_b] = t_stack[r_a];
-		h_stack[r_a] = NULL;t_stack[r_a] = NULL;
 	}
+	h_stack[r_a] = NULL;t_stack[r_a] = NULL;
 }
 
 
