@@ -5,7 +5,6 @@
 
 int main()
 {
-	printf("go");
 	generator.init();
 	int t = generator.getT();
 	printf("%d\n",t);
@@ -15,7 +14,6 @@ int main()
 		generator.getData(&n,&p,&q,&r);
 		int ans = 0;
 		for(int i = 0 ; i < n ; i++)
-			ans+=p[i]*q[i]*r[i];
-		printf("%d\n",ans);
+			printf("%d %d %d %d\n",n,p[i],q[i],r[i]);
 	}
 }
